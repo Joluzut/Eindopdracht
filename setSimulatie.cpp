@@ -10,14 +10,14 @@ setSimulatie::setSimulatie(int percentage)
     hoeveelheidUD = percentage / 100 * 4321;
     srand(static_cast<unsigned>(time(NULL)));
 
-    // Resize vectors and initialize Auto objects
+    
     autosDU.resize(hoeveelheidDU, Auto());
     autosUD.resize(hoeveelheidUD, Auto());
 }
 
 setSimulatie::~setSimulatie()
 {
-	// Nothing to do here
+	
 
 }
 

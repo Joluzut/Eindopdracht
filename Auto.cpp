@@ -2,7 +2,7 @@
 
 Auto::Auto() : type(0), accucapaciteit(0), verbruik(0), SoC(0), locatie(0), naam(""), bestemming(0)
 {
-	// Initialize the members in the default constructor
+	
 }
 
 void Auto::createAuto(int type, int soc, int bestemming, int locatie)
