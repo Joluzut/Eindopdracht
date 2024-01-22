@@ -39,10 +39,10 @@ void Laadpunt::singleAction(volatile unsigned int time)
 	if (time % 300 == 0)
 	{
 		std::lock_guard<std::mutex> lock(queueMutex);
+		wachtrij = getLength() * 5;
+		std::cout << "Laadpunt: " << naam << " Wachtrij: " << getLength() << " Wachttijd: "<< wachtrij << std::endl;
 
-		std::cout << "Laadpunt: " << naam << " Wachtrij: " << wachtrijAuto.size() << std::endl;
-
-		if (wachtrijAuto.size() > 0)
+		if (getLength() > 0)
 		{
 			Auto* firstCar = wachtrijAuto.front();
 			firstCar->fullCharge();
@@ -51,7 +51,13 @@ void Laadpunt::singleAction(volatile unsigned int time)
 	}
 }
 
-
+void Laadpunt::showData()
+{
+	if (wachtrij > 0)
+	{
+		std::cout << "Laadpunt: " << naam << " Wachtrij: " << getLength() << " Gemiddelde Wachttijd: " << (wachtrij * 5.00) / 12.00 << std::endl;
+	}
+}
 
 void Laadpunt::addAuto(Auto* newAuto)
 {

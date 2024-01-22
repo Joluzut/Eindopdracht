@@ -2,25 +2,22 @@
 #include "Gebruiker.h"
 #include "setSimulatie.h"
 
+
 #include <iostream>
-#include <vector>
-
-#define MAX_TIME            3600
-#define MAX_PARTICIPANTS   10000
-
-void timeLoop()
-{
-    Clock::instance().loop( MAX_TIME );
-}
 
 int main()
 {
-    setSimulatie* simulatie = new setSimulatie(5);
+    while (1)
+    {
+        int userInput;
+        std::cout << "Geef de hoeveelheid elektrische auto's: ";
+        std::cin >> userInput;
+        setSimulatie* simulatie = new setSimulatie(userInput);
+
+        delete simulatie;
+        Clock::instance().reset();
+    }
     
-
-    delete simulatie;
-
-    //Clock::instance().reset();
 
     return 0;
 }

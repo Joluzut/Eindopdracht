@@ -132,4 +132,11 @@ Clock::proceed()
     return m_nProcessed == m_paListeners.size();
 }
 
+void Clock::reset()
+{
+    updateListeners();
+
+    m_nProcessed = 0;
+    m_bIsStopped = false;
+}
 

@@ -23,8 +23,8 @@ setSimulatie::setSimulatie(int percentage)
     
      
     std::cout << "Simulatie gestart" << std::endl;
-    std::cout << laadpunten[0]->getLength() << std::endl;
-    std::cout << laadpunten[1]->getLength() << std::endl;
+    laadpunten[0]->showData();
+    laadpunten[1]->showData();
 
 }
 

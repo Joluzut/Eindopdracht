@@ -22,6 +22,7 @@ public:
 
 public:
     static Clock&               instance();
+    virtual void 			    reset();
 
 public:
     virtual void                addToClock( ClockListener& );

@@ -20,6 +20,7 @@ public:
 	void addAuto(Auto* newAuto);
 	int getID();
 	int getLength();
+	void showData();
 
 private:
 	std::string naam;
@@ -27,7 +28,8 @@ private:
 	std::mutex queueMutex;
 	int locatie;
 	bool beschikbaar;
-	int wachtrij;
+	double wachtrij;
+
 	int ID;
 	
 
