@@ -12,9 +12,9 @@ public:
     virtual                ~ClockListener();
 
 public:
-                            //ClockListener( const ClockListener& )   = delete;
+                            ClockListener( const ClockListener& );
                             //ClockListener( ClockListener&& )        = delete;
-                //ClockListener&  operator = ( const ClockListener& )     = delete;
+            //ClockListener&  operator = ( const ClockListener& )     = delete;
             //ClockListener&  operator = ( ClockListener&& )          = delete;
 
 

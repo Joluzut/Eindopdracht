@@ -1,26 +1,33 @@
 #pragma once
-
-#include "ClockListener.cpp"
 #include <string>
 #include <iostream>
-
-class Auto : public ClockListener
+#include "ClockListener.h"
+#include "Laadpunt.h"
+class Auto: public ClockListener
 {
 public:
     Auto();
-    virtual ~Auto() = default;
-    void createAuto(int type, int soc, int bestemming, int locatie);
+    virtual ~Auto();
+    void createAuto(int id, int type, int soc, Laadpunt* laadpunt, int locatie, int tijd);
     void showAuto();
+    void singleAction(volatile unsigned int) override;
+    int getID();
+    void fullCharge();
 
-    void singleAction(volatile unsigned) override;
-
+    bool operator==(const Auto& other) const {
+        return this->id == other.id;
+    }
 
 private:
+    int id;
     int type;
     int accucapaciteit;
     int verbruik;
-    int SoC;
-    int locatie;
+    double SoC;
+    double locatie;
+    int tijd;
     std::string naam;
     int bestemming;
+    bool wachten;
+    Laadpunt* laadpunt;
 };

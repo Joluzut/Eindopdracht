@@ -131,6 +131,7 @@
     <ClCompile Include="Clock.cpp" />
     <ClCompile Include="ClockListener.cpp" />
     <ClCompile Include="Gebruiker.cpp" />
+    <ClCompile Include="Laadpunt.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="setSimulatie.cpp" />
   </ItemGroup>
@@ -139,6 +140,7 @@
     <ClInclude Include="Clock.h" />
     <ClInclude Include="ClockListener.h" />
     <ClInclude Include="Gebruiker.h" />
+    <ClInclude Include="Laadpunt.h" />
     <ClInclude Include="setSimulatie.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

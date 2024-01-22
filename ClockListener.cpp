@@ -81,3 +81,14 @@ ClockListener::setDoProcess( bool value )
 
     m_bDoProcess    = value;
 }
+
+ClockListener::ClockListener(const ClockListener& listener)
+    : m_cOwner(Clock::instance())
+{
+    m_cOwner.addToClock(*this);
+
+    m_bDoProcess = false;
+
+    m_nTime = 0;
+    m_cThread = std::thread(&ClockListener::action, this);
+}

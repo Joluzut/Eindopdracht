@@ -15,8 +15,12 @@ void timeLoop()
 
 int main()
 {
-    setSimulatie simulatie(1);
-    simulatie.maakAuto();
+    setSimulatie* simulatie = new setSimulatie(5);
+    
+
+    delete simulatie;
+
+    //Clock::instance().reset();
 
     return 0;
 }
