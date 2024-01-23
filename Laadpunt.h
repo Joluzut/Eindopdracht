@@ -21,6 +21,8 @@ public:
 	int getID();
 	int getLength();
 	void showData();
+	std::string getNaam();
+	double getWachtrij();
 
 private:
 	std::string naam;
@@ -29,7 +31,9 @@ private:
 	int locatie;
 	bool beschikbaar;
 	double wachtrij;
-
+	double totaleWachtrij;
+	int alleWachtrij;
+	int oplaadTijd;
 	int ID;
 	
 

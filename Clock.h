@@ -22,7 +22,7 @@ public:
 
 public:
     static Clock&               instance();
-    virtual void 			    reset();
+    virtual void 			    reset();//reset alle waardes van de simulatie
 
 public:
     virtual void                addToClock( ClockListener& );

@@ -5,24 +5,44 @@
 #include <ctime>
 #include <process.h>
 #include <random>
+#include <iomanip>
 
 setSimulatie::setSimulatie(int percentage)
 {
-    std::cout << "Simulatie start" << std::endl;
     this->percentage = percentage;
+    minuten = 0;
+    //aantal auto's berekenen
+    hoeveelheidTotaal = static_cast<int>((percentage * (3688+4321)) / 100);
+    laadpunten.resize(2, nullptr);
+    autos.resize(hoeveelheidTotaal, nullptr);
 
-    hoeveelheidDU = static_cast<int>((percentage * 3688) / 100);
-    hoeveelheidUD = static_cast<int>((percentage * 4321) / 100);
-    //hoeveelheidDU = 3;
-    //hoeveelheidUD = 3;
-    
+    //random generator
     std::random_device rd;
     std::mt19937 gen(rd());
+    
+    //laadpunten aanmaken
+    for (int i = 0; i < 2; i++) {
+        laadpunten[i] = new Laadpunt();
+    }
 
+    //laadpunten vullen
+    maakLaadpunt();
+
+    //auto's aanmaken
+    for (int i = 0; i < hoeveelheidTotaal; i++) {
+        autos[i] = new Auto();
+    }
+
+    //auto's vullen
+    maakAuto();
+
+    std::cout << "Start Simulatie" << std::endl;
+    //start klok
     Clock::instance().loop(3600);
     
      
-    std::cout << "Simulatie gestart" << std::endl;
+    std::cout << "Simulatie klaar resultaten:" << std::endl;
+    //resultaten
     laadpunten[0]->showData();
     laadpunten[1]->showData();
 
@@ -32,12 +52,8 @@ setSimulatie::~setSimulatie()
 {
     std::cout << "Simulatie gestopt" << std::endl;
 
-    for (int i = 0; i < hoeveelheidDU; i++) {
-        delete autosDU[i];
-    }
-
-    for (int i = 0; i < hoeveelheidUD; i++) {
-        delete autosUD[i];
+    for (int i = 0; i < hoeveelheidTotaal; i++) {
+        delete autos[i];
     }
 
     for (int i = 0; i < 2; i++) {
@@ -49,99 +65,71 @@ void setSimulatie::maakAuto()
 {
     int random;
     int idAuto;
+    int idLaadpunt;
     std::random_device rd;
     std::mt19937 gen(rd());
 
     std::uniform_int_distribution<> randomDist(0, 100);
     std::uniform_int_distribution<> randomSoC(10, 100);
-    std::uniform_int_distribution<> randomLoc(0, 40);
     std::uniform_int_distribution<> randomTime(0, 3600);
 
-    std::cout << "maakautos start" << std::endl;
-
-    for (int i = 0; i < hoeveelheidDU; i++)
+    for (int i = 0; i < hoeveelheidTotaal; i++)
     {
         random = randomDist(gen);
+        //genereer random auto gebaseerd gegeven getallen
         if (random < 51)
         {
+            //tesla
             idAuto = 0;
         }
         else if (random < 76)
         {
+            //kia
             idAuto = 1;
         }
         else
         {
+            //volkswagen
             idAuto = 2;
         }
-
-        autosDU[i]->createAuto(i, idAuto, randomSoC(gen), laadpunten[0], randomLoc(gen), randomTime(gen));
-    }
-
-    for (int i = 0; i < hoeveelheidUD; i++)
-    {
         random = randomDist(gen);
-        if (random < 51)
+        //genereer random startpunt/laadpunt gebaseerd gegeven getallen
+        if (random < 54)
         {
-            idAuto = 0;
-        }
-        else if (random < 76)
-        {
-            idAuto = 1;
-        }
+			idLaadpunt = 0;
+		}
         else
         {
-            idAuto = 2;
-        }
-
-        autosUD[i]->createAuto(i, idAuto, randomSoC(gen), laadpunten[1], randomLoc(gen), randomTime(gen));
+			idLaadpunt = 1;
+		}
+        //auto's aanmaken met genereerde gegevens
+        autos[i]->createAuto(i, idAuto, randomSoC(gen), laadpunten[idLaadpunt], 0, randomTime(gen));
+        //autos[i]->showAuto();  
     }
-    std::cout << "maakautos klaar" << std::endl;
-}
-
-void setSimulatie::showAuto()
-{
-    std::cout << "showautos start" << std::endl;
-    for (int i = 0; i < hoeveelheidDU; i++)
-    {
-        autosDU[i]->showAuto();
-    }
-    for (int i = 0; i < hoeveelheidUD; i++)
-    {
-        autosUD[i]->showAuto();
-    }
-    std::cout << "showautos klaar" << std::endl;
 }
 
 void setSimulatie::maakLaadpunt()
 {
+    //laadpunten aanmaken
     laadpunten[0]->createLaadpunt(30, "Lingehorst", 1);
     laadpunten[1]->createLaadpunt(12, "Bisde", 2);
-    laadpunten[0]->showLaadpunt();
-    laadpunten[1]->showLaadpunt();
+    //laadpunten[0]->showLaadpunt();
+    //laadpunten[1]->showLaadpunt();
 }
 
 void setSimulatie::singleAction(volatile unsigned int time)
 {
-    if (time == 1)
+    if (time % 60 == 1)//elke minuut laat de simulatie de gegevens zien
     {
-        autosDU.resize(hoeveelheidDU, nullptr);
-        autosUD.resize(hoeveelheidUD, nullptr);
-        laadpunten.resize(2, nullptr);
+          minuten++;
+        std::cout << std::setw(12) << std::left << "Laadpunt:" << std::setw(12) << laadpunten[0]->getNaam()
+            << std::setw(12) << std::left << "Wachtrij:" << std::setw(5) << laadpunten[0]->getLength()
+            << std::setw(12) << std::left << "Wachttijd:" << std::setw(5) << laadpunten[0]->getWachtrij() 
+            << std::setw(5) << std::left << "Tijd:" << minuten << std::endl;
 
-        for (int i = 0; i < hoeveelheidDU; i++) {
-            autosDU[i] = new Auto();
-        }
-
-        for (int i = 0; i < hoeveelheidUD; i++) {
-            autosUD[i] = new Auto();
-        }
-
-        for (int i = 0; i < 2; i++) {
-            laadpunten[i] = new Laadpunt();
-        }
-        maakAuto();
-        maakLaadpunt();
-        //showAuto();
+        std::cout << std::setw(12) << std::left << "Laadpunt:" << std::setw(12) << laadpunten[1]->getNaam()
+            << std::setw(12) << std::left << "Wachtrij:" << std::setw(5) << laadpunten[1]->getLength()
+            << std::setw(12) << std::left << "Wachttijd:" << std::setw(5) << laadpunten[1]->getWachtrij()
+            << std::setw(5) << std::left << "Tijd:" << minuten << std::endl;
     }
 }

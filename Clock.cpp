@@ -85,7 +85,9 @@ Clock::updateListeners()
     m_paListeners.insert( m_paAddListeners.begin(), m_paAddListeners.end() );
     m_paAddListeners.clear();
 
-    m_paListeners.erase( m_paRemoveListeners.begin(), m_paRemoveListeners.end() );
+    for (auto it = m_paRemoveListeners.begin(); it != m_paRemoveListeners.end(); ++it) {
+        m_paListeners.erase(*it);
+    }
     m_paRemoveListeners.clear();
 }
 
@@ -125,6 +127,7 @@ Clock::setStopped()
 
     m_bIsStopped    = true;
 }
+
 
 bool
 Clock::proceed()

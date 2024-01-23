@@ -11,16 +11,14 @@ public:
     setSimulatie(int percentage);
     virtual ~setSimulatie();
     void maakAuto();
-    void showAuto();
     void maakLaadpunt();
     void singleAction(volatile unsigned int) override;
 
 private:
     int percentage;
-    int hoeveelheidDU;
-    int hoeveelheidUD;
-    std::vector<Auto*> autosDU;
-    std::vector<Auto*> autosUD;
+    int hoeveelheidTotaal;
+    int minuten;
+    std::vector<Auto*> autos;
     std::vector<Laadpunt*> laadpunten;
 };
 

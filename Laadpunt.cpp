@@ -1,5 +1,6 @@
 #include "Laadpunt.h"
 #include "Auto.h"
+#include <iomanip>
 
 Laadpunt::Laadpunt()
 {
@@ -8,6 +9,8 @@ Laadpunt::Laadpunt()
 	this->locatie = 0;
 	this->beschikbaar = true;
 	this->wachtrij = 0;
+	this->totaleWachtrij = 0;
+	this->oplaadTijd = 0;
 }
 
 Laadpunt::~Laadpunt()
@@ -17,6 +20,7 @@ Laadpunt::~Laadpunt()
 
 void Laadpunt::createLaadpunt(int locatie, std::string naam, int ID)
 {
+	//maak laadpunt aan met gegeven parameters
 	this->ID = ID;
 	this->naam = naam;
 	this->locatie = locatie;
@@ -35,34 +39,39 @@ void Laadpunt::showLaadpunt()
 }
 
 void Laadpunt::singleAction(volatile unsigned int time)
-{
-	if (time % 300 == 0)
-	{
-		std::lock_guard<std::mutex> lock(queueMutex);
-		wachtrij = getLength() * 5;
-		std::cout << "Laadpunt: " << naam << " Wachtrij: " << getLength() << " Wachttijd: "<< wachtrij << std::endl;
-
-		if (getLength() > 0)
-		{
-			Auto* firstCar = wachtrijAuto.front();
-			firstCar->fullCharge();
-			wachtrijAuto.pop();
+{		
+	wachtrij = getLength() * 5;
+	//voor gemiddelde berekenen
+	totaleWachtrij = totaleWachtrij + wachtrij;
+	if (getLength() > 0)
+	{//als er autos in de wachtrij staan
+		oplaadTijd++;
+		wachtrij = wachtrij - oplaadTijd / 60;
+		//wachtrij wordt minder als de auto aan het opladen is
+		if (oplaadTijd == 300)
+		{//als de auto 5 minuten heeft opgeladen
+			std::lock_guard<std::mutex> lock(queueMutex);//lock de queue
+			Auto* firstCar = wachtrijAuto.front();//haal de eerste auto uit de queue
+			firstCar->fullCharge();//laad de auto vol
+			wachtrijAuto.pop();//haal de auto uit de queue
+			oplaadTijd = 0;
 		}
 	}
 }
 
 void Laadpunt::showData()
 {
-	if (wachtrij > 0)
-	{
-		std::cout << "Laadpunt: " << naam << " Wachtrij: " << getLength() << " Gemiddelde Wachttijd: " << (wachtrij * 5.00) / 12.00 << std::endl;
-	}
+	std::cout << std::setw(12) << std::left << "Laadpunt:" << std::setw(12) << getNaam()
+	<< std::setw(12) << std::left << "Wachtrij:" << std::setw(5) << getLength()
+	<< std::setw(12) << std::left << "Totale Wachtrij:" << std::setw(5) << alleWachtrij
+	<< std::setw(5) << std::left << "Gemiddelde Wachttijd:" << std::setw(5) << totaleWachtrij / 3600.00  << std::endl;
 }
 
 void Laadpunt::addAuto(Auto* newAuto)
 {
-	std::lock_guard<std::mutex> qLockguard(queueMutex);
-	wachtrijAuto.push(newAuto);
+	alleWachtrij++;
+	std::lock_guard<std::mutex> qLockguard(queueMutex);//lock de queue
+	wachtrijAuto.push(newAuto);//voeg auto toe aan de queue
 }
 
 
@@ -75,4 +84,14 @@ int Laadpunt::getID()
 int Laadpunt::getLength()
 {
 	return wachtrijAuto.size();
+}
+
+std::string Laadpunt::getNaam()
+{
+	return naam;
+}
+
+double Laadpunt::getWachtrij()
+{
+	return wachtrij;
 }

@@ -14,6 +14,7 @@ public:
     int getID();
     void fullCharge();
 
+    //voor de laadpunt class die twee autos met elkaar vergelijkt
     bool operator==(const Auto& other) const {
         return this->id == other.id;
     }
@@ -27,7 +28,6 @@ private:
     double locatie;
     int tijd;
     std::string naam;
-    int bestemming;
     bool wachten;
     Laadpunt* laadpunt;
 };
